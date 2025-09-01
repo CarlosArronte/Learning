@@ -5,6 +5,7 @@
 [Replace Temp With Query](#2--replace-temp-with-query)  
 [Inline Variable](#3--inline-variable)
 [Split Loop](#4--split-loop)
+[Slide Statement](#5--slide-statement)
 
 
 **Pasos:** <br>
@@ -211,4 +212,38 @@ function getAmount(students) {
 function getTotal(students) {    
     return getPrice(students) * getAmount(students);
 }
+```
+## 5- Slide Statement:<br>
+**Cuando usar**:
+- Cuando una sentencia puede ser movida a otro lugar sin afectar la lógica del código.
+- Cuando una sentencia está en un lugar que dificulta la comprensión del código.
+- Se usa basicamente para mejorar la legibilidad del código.
+**Como usar**:
+- Mover la sentencia a un lugar más apropiado, como dentro de un bloque condicional o fuera de un loop.
+**Qué hacer después**:
+- Testear y corregir errores.
+- Commit con el cambio.
+**Ejemplo**:
+```javascript
+let result;
+if (availableResources.length === 0) {
+result = createResource();
+allocatedResources.push(result);
+} else {
+result = availableResources.pop();
+allocatedResources.push(result);
+}
+return result;
+```
+Se refactoriza a:
+```javascript
+let result;
+if (availableResources.length === 0) {
+result = createResource();
+} else {
+result = availableResources.pop();
+}
+allocatedResources.push(result);
+return result;
+
 ```
