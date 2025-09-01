@@ -12,6 +12,11 @@
 1. Garantizar un número **robusto** de testes a usar en la seccion de código a refactorar.<br>
     a) Esto será útil para la identificacion de errores introducidos en la refact.<br>
     b) SIEMPRE testes automáticos.
+2. Split Loop (si es necesario).<br>
+3. Slide Statement (si es necesario).<br>
+4. Extract Function.<br>
+5. Replace Temp With Query (si es necesario).<br>
+6. Inline Variable (si es necesario).<br>
 
 
 **Procedimientos**
