@@ -4,6 +4,7 @@
 [Extract function](#1--extract-function)  
 [Replace Temp With Query](#2--replace-temp-with-query)  
 [Inline Variable](#3--inline-variable)
+[Split Loop](#4--split-loop)
 
 
 **Pasos:** <br>
@@ -164,5 +165,50 @@ function moreThanFiveLateDeliveries(driver) {
 }
 function isTerrible(driver) {
     return driver.rating === 2;
+}
+```
+## 4- Split Loop:<br>
+**Cuando usar**:
+- Cuando un loop hace más de una cosa.
+**Como usar**:
+- Dividir el loop en dos o más loops, cada uno haciendo una sola cosa.
+**Qué hacer después**:
+- Extraer funciones para cada loop si es necesario.
+- Testear y corregir errores.
+- Commit con el cambio.
+**Ejemplo**:
+```javascript
+function getTotal(students) {
+    let price = 0;
+    let amount = 0;
+
+for(const s of students) {
+        price += s.price;
+        amount += s.amount;
+    }
+    return price * amount;
+}
+```
+Se refactoriza a:
+```javascript
+
+function getPrice(students) {
+    let price = 0;
+    for(const s of students) {
+        price += s.price;
+    }
+    return price;
+}
+
+function getAmount(students) {
+    let amount = 0;
+    for(const s of students) {
+        amount += s.amount;
+    }
+    return amount;
+}
+
+function getTotal(students) {    
+    return getPrice(students) * getAmount(students);
 }
 ```
