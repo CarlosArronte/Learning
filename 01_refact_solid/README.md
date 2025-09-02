@@ -4,8 +4,10 @@
 [Extract function](#1--extract-function)  
 [Replace Temp With Query](#2--replace-temp-with-query)  
 [Inline Variable](#3--inline-variable)
-[Split Loop](#4--split-loop)
-[Slide Statement](#5--slide-statement)
+[Split Loop](#4--split-loop)  
+[Slide Statement](#5--slide-statement)  
+[Split Phase] (#6--split-phase) 
+
 
 
 **Pasos:** <br>
@@ -250,5 +252,50 @@ result = availableResources.pop();
 }
 allocatedResources.push(result);
 return result;
+
+```
+
+## 6- Split Phase:<br>
+**Cuando usar**:
+- Cuando una función realiza múltiples fases de procesamiento que pueden ser separadas.
+- Cuando cada fase tiene una responsabilidad distinta y clara.
+- Tener en cuenta que cada fase usa sus propios datos intermedios (lo que usa una fase no debería ser usado por otra).
+- La idea es usar una estructura que encapsule los datos intermedios y pase esa estructura entre las fases.
+**Como usar**:
+- Dividir la función en varias funciones, cada una encargada de una fase específica del procesamiento.
+- Asegurarse de que cada función tenga un nombre descriptivo que refleje su propósito.
+**Qué hacer después**:
+- Testear y corregir errores.
+- Commit con el cambio.
+**Ejemplo**:
+```javascript
+ function priceOrder(product, quantity, shippingMethod) {
+    const basePrice = product.basePrice * quantity;
+    const discount = Math.max(quantity - product.discountThreshold, 0)* product.basePrice * product.discountRate;
+    const shippingPerCase = (basePrice > shippingMethod.discountThreshold)? shippingMethod.discountedFee : shippingMethod.feePerCase;
+    const shippingCost = quantity * shippingPerCase;
+    const price = basePrice - discount + shippingCost;
+    return price;
+ }
+```
+Se refactoriza a:
+```javascript
+ function priceOrder(product, quantity, shippingMethod) {
+    const priceData = getPriceData(product, quantity);
+    return applyShipping(priceData,shippingMethod);
+ }
+
+function getPriceData(product, quantity){
+    const basePrice = product.basePrice * quantity;
+    const discount = Math.max(quantity - product.discountThreshold, 0)* product.basePrice * product.discountRate;
+    return {basePrice:basePrice,quantity:quantity,discount:discount};
+}
+
+function applyShipping(priceData,shippingMethod){
+    const shippingPerCase = (priceData.basePrice > shippingMethod.discountThreshold)? shippingMethod.discountedFee : shippingMethod.feePerCase;
+    const shippingCost = priceData.quantity * shippingPerCase;
+    return priceData.basePrice - priceData.discount + shippingCost;
+    
+}
 
 ```
