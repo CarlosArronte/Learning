@@ -6,7 +6,8 @@
 [Inline Variable](#3--inline-variable)
 [Split Loop](#4--split-loop)  
 [Slide Statement](#5--slide-statement)  
-[Split Phase] (#6--split-phase) 
+[Split Phase](#6--split-phase) 
+[Move Function](#7--move-function)
 
 
 
@@ -19,6 +20,7 @@
 4. Extract Function.<br>
 5. Replace Temp With Query (si es necesario).<br>
 6. Inline Variable (si es necesario).<br>
+
 
 
 **Procedimientos**
@@ -298,4 +300,92 @@ function applyShipping(priceData,shippingMethod){
     
 }
 
+```
+
+## 7- Move Function:<br>
+**Cuando usar**:
+- Cuando una función está más relacionada con otra clase o módulo que con la clase o módulo en el que está actualmente.
+- Cuando una función utiliza principalmente datos de otra clase o módulo.
+- Cuando una función no utiliza datos de la clase o módulo en el que está actualmente.
+- Regla general: Si es dificil decidir dónde mover la función, probablemente no debería moverse.
+**Como usar**:
+- Identificar la clase o módulo al que la función está más relacionada.
+- Mover la función a esa clase o módulo.
+- Actualizar todas las referencias a la función para que apunten a su nueva ubicación.
+**Qué hacer después**:
+- Testear y corregir errores.
+- Commit con el cambio.
+**Ejemplo**:
+```php
+class Order {
+    private $amount;
+    private $customer;
+
+    public function __construct(float $amount, Customer $customer) {
+        $this->amount = $amount;
+        $this->customer = $customer;
+    }
+
+    // Función que calcula el descuento (no debería estar aquí ya que usa datos de Customer)
+    public function calculateDiscount(): float {
+        $discount = 0;
+        if ($this->customer->isLoyal()) {
+            $discount = $this->amount * 0.1; // 10% descuento para clientes leales
+        }
+        return $discount;
+    }
+
+    public function getFinalAmount(): float {
+        return $this->amount - $this->calculateDiscount();
+    }
+}
+
+class Customer {
+    private $isLoyal;
+
+    public function __construct(bool $isLoyal) {
+        $this->isLoyal = $isLoyal;
+    }
+
+    public function isLoyal(): bool {
+        return $this->isLoyal;
+    }
+}
+```
+Se refactoriza a:
+```php
+class Order {
+    private $amount;
+    private $customer;
+
+    public function __construct(float $amount, Customer $customer) {
+        $this->amount = $amount;
+        $this->customer = $customer;
+    }
+
+    public function getFinalAmount(): float {
+        return $this->amount - $this->customer->calculateDiscount($this->amount);
+    }
+}
+
+class Customer {
+    private $isLoyal;
+
+    public function __construct(bool $isLoyal) {
+        $this->isLoyal = $isLoyal;
+    }
+
+    public function isLoyal(): bool {
+        return $this->isLoyal;
+    }
+
+    // Función trasladada a la clase Customer
+    public function calculateDiscount(float $amount): float {
+        $discount = 0;
+        if ($this->isLoyal) {
+            $discount = $amount * 0.1; // 10% descuento para clientes leales
+        }
+        return $discount;
+    }
+}
 ```
