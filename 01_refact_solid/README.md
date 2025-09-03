@@ -8,6 +8,9 @@
 [Slide Statement](#5--slide-statement)  
 [Split Phase](#6--split-phase) 
 [Move Function](#7--move-function)
+[Replace Loop With Pipeline](#8--replace-loop-with-pipeline)
+[Replace Conditional With Polymorphism](#9--replace-conditional-with-polymorphism)
+[Change Function Declaration](#10--change-function-declaration)
 
 
 
@@ -389,3 +392,95 @@ class Customer {
     }
 }
 ```
+
+## 8- Replace Loop With Pipeline:<br>
+**Cuando usar**:
+- Cuando un loop puede ser reemplazado por una serie de operaciones de transformación y filtrado.
+- Cuando el loop realiza operaciones que pueden ser expresadas de manera más concisa y legible usando funciones de orden superior como map, filter, reduce, etc (la idea es sustituir el loop con operaciones de mapeado y filtrado).
+**Como usar**:  
+- Identificar el loop que se desea reemplazar.
+- Determinar las operaciones de transformación y filtrado que el loop realiza.
+- Reemplazar el loop con una cadena de llamadas a funciones de orden superior que realicen las mismas operaciones.
+**Qué hacer después**:
+- Testear y corregir errores.
+- Commit con el cambio.
+**Ejemplo**:
+```javascript
+function getActiveUserNames(users) {
+    const activeUserNames = [];
+    for (const user of users) {
+        if (user.isActive) {
+            activeUserNames.push(user.name);
+        }
+    }
+    return activeUserNames;
+}
+```
+Se refactoriza a:
+```javascript
+function getActiveUserNames(users) {
+    return users
+        .filter(user => user.isActive) // Filtrar usuarios activos
+        .map(user => user.name);       // Mapear a nombres de usuario
+}
+```
+## 9- Replace Conditional With Polymorphism:<br>
+**Cuando usar**:
+- Cuando una estructura condicional (if, switch) determina el comportamiento de un objeto basado en su tipo o estado.
+- Cuando se tiene una jerarquía de clases y cada subclase implementa un comportamiento diferente.
+**Como usar**:
+- Identificar la estructura condicional que se desea reemplazar.
+- Crear una clase base con un método abstracto o virtual que represente el comportamiento común.
+- Crear subclases que implementen el método de manera específica para cada caso.
+- Reemplazar la estructura condicional con llamadas al método polimórfico.
+**Qué hacer después**:
+- Testear y corregir errores.
+- Commit con el cambio.
+**Ejemplo**:
+```javascript
+class Employee {
+    constructor(name, type) {
+        this.name = name;
+        this.type = type; // 'full-time', 'part-time', 'contractor'
+    }
+
+    calculatePay(hoursWorked) {
+        if (this.type === 'full-time') {
+            return hoursWorked * 30; // tarifa por hora para full-time
+        } else if (this.type === 'part-time') {
+            return hoursWorked * 20; // tarifa por hora para part-time
+        } else if (this.type === 'contractor') {
+            return hoursWorked * 40; // tarifa por hora para contractor
+        }
+        throw new Error('Unknown employee type');
+    }
+}
+```
+Se refactoriza a:
+```javascript
+class Employee {
+    constructor(name) {
+        this.name = name;
+    }
+
+    calculatePay(hoursWorked) {
+        throw new Error('This method should be overridden!');
+    }
+}
+class FullTimeEmployee extends Employee {
+    calculatePay(hoursWorked) {
+        return hoursWorked * 30; // tarifa por hora para full-time
+    }
+}
+class PartTimeEmployee extends Employee {
+    calculatePay(hoursWorked) {
+        return hoursWorked * 20; // tarifa por hora para part-time
+    }
+}
+class Contractor extends Employee {
+    calculatePay(hoursWorked) {
+        return hoursWorked * 40; // tarifa por hora para contractor
+    }
+}
+```
+## 10- Change Function Declaration:<br>
