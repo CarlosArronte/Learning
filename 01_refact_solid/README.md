@@ -484,3 +484,27 @@ class Contractor extends Employee {
 }
 ```
 ## 10- Change Function Declaration:<br>
+**Cuando usar**:
+- Cuando la firma de una función no refleja adecuadamente su propósito o uso.
+- Cuando se necesita mejorar la claridad, flexibilidad o mantenibilidad de una función.
+**Como usar**:
+- Cambiar el nombre de la función para que refleje mejor su propósito.
+- Modificar los parámetros de la función para que sean más claros o adecuados.
+- Cambiar el tipo de retorno de la función si es necesario.
+- Asegurarse de que todas las llamadas a la función se actualicen para reflejar los cambios.
+**Qué hacer después**:
+- Testear y corregir errores.
+- Commit con el cambio.
+**Ejemplo**:
+```javascript
+function calculateTotal(price, taxRate) {
+    return price + (price * taxRate);
+}
+```
+Se refactoriza a:
+```javascript
+
+function calculateTotal(price, taxRate = 0.1) { // valor por defecto para taxRate
+    return price + (price * taxRate);
+}
+```
