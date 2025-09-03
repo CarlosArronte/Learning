@@ -197,36 +197,36 @@ Ahora observo como thisAmount puede ser sustituida como amountFor(perf); en todo
 /*
 Sigo viendo que la funcion statement puede ser dividida en funciones aun menores (volumeCreditsFor(perf))
 */
-function playFor(aPerformance) {
-    return plays[aPerformance.playID];
-}
+// function playFor(aPerformance) {
+//     return plays[aPerformance.playID];
+// }
 
-function volumeCreditsFor(perf) {
-    let volumeCredits = 0;
-    volumeCredits += Math.max(perf.audience - 30, 0);
-    if ("comedy" === playFor(perf).type) volumeCredits += Math.floor(perf.audience / 5);
-    return volumeCredits;
-}
+// function volumeCreditsFor(perf) {
+//     let volumeCredits = 0;
+//     volumeCredits += Math.max(perf.audience - 30, 0);
+//     if ("comedy" === playFor(perf).type) volumeCredits += Math.floor(perf.audience / 5);
+//     return volumeCredits;
+// }
 
-function statement(invoice, plays) {
-    let totalAmount = 0;
-    let volumeCredits = 0;
-    let result = `Statement for ${invoice.customer}\n`;
-    const format = new Intl.NumberFormat("en-US",
-        {
-            style: "currency", currency: "USD",
-            minimumFractionDigits: 2
-        }).format;
-    for (let perf of invoice.performances) {
-        volumeCredits += volumeCreditsFor(perf);
-        result += ` ${playFor(perf).name}:
-{format(amountFor(perf)/100)} (${perf.audience} seats)\n`;
-        totalAmount += amountFor(perf);
-    }
-    result += `Amount owed is ${format(totalAmount / 100)}\n`;
-    result += `You earned ${volumeCredits} credits\n`;
-    return result;
-}
+// function statement(invoice, plays) {
+//     let totalAmount = 0;
+//     let volumeCredits = 0;
+//     let result = `Statement for ${invoice.customer}\n`;
+//     const format = new Intl.NumberFormat("en-US",
+//         {
+//             style: "currency", currency: "USD",
+//             minimumFractionDigits: 2
+//         }).format;
+//     for (let perf of invoice.performances) {
+//         volumeCredits += volumeCreditsFor(perf);
+//         result += ` ${playFor(perf).name}:
+// {format(amountFor(perf)/100)} (${perf.audience} seats)\n`;
+//         totalAmount += amountFor(perf);
+//     }
+//     result += `Amount owed is ${format(totalAmount / 100)}\n`;
+//     result += `You earned ${volumeCredits} credits\n`;
+//     return result;
+// }
 
 /*
     Otra funcion útil a extraer es la asociada con la variable format
