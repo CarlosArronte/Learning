@@ -11,6 +11,7 @@
 [Replace Loop With Pipeline](#8--replace-loop-with-pipeline)
 [Replace Conditional With Polymorphism](#9--replace-conditional-with-polymorphism)
 [Change Function Declaration](#10--change-function-declaration)
+[Replace Type Code With Subclasses](#11--replace-type-code-with-subclasses)
 
 
 
@@ -506,5 +507,66 @@ Se refactoriza a:
 
 function calculateTotal(price, taxRate = 0.1) { // valor por defecto para taxRate
     return price + (price * taxRate);
+}
+```
+
+## 11- Replace Type Code With Subclasses:<br>
+**Cuando usar**:
+- Cuando una clase tiene un campo que actúa como un "código de tipo" para diferenciar comportamientos o atributos.
+- Cuando el código de tipo conduce a múltiples condicionales en el código que manejan diferentes comportamientos basados en el valor del código.
+**Como usar**:
+- Identificar la clase que contiene el código de tipo.
+- Crear una clase base que represente la entidad común.
+- Crear subclases para cada tipo específico que hereden de la clase base.
+- Mover los comportamientos específicos de cada tipo a las subclases correspondientes.
+- Reemplazar las instancias de la clase original con instancias de las subclases
+**Qué hacer después**:
+- Testear y corregir errores.
+- Commit con el cambio.
+**Ejemplo**:
+```javascript
+class Employee {
+    constructor(name, type) {
+        this.name = name;
+        this.type = type; // 'full-time', 'part-time', 'contractor'
+    }
+
+    calculatePay(hoursWorked) {
+        if (this.type === 'full-time') {
+            return hoursWorked * 30; // tarifa por hora para full-time
+        } else if (this.type === 'part-time') {
+            return hoursWorked * 20; // tarifa por hora para part-time
+        } else if (this.type === 'contractor') {
+            return hoursWorked * 40; // tarifa por hora para contractor
+        }
+        throw new Error('Unknown employee type');
+    }
+}
+```
+Se refactoriza a:
+```javascript
+class Employee {
+    constructor(name) {
+        this.name = name;
+    }
+
+    calculatePay(hoursWorked) {
+        throw new Error('This method should be overridden!');
+    }
+}
+class FullTimeEmployee extends Employee {
+    calculatePay(hoursWorked) {
+        return hoursWorked * 30; // tarifa por hora para full-time
+    }
+}
+class PartTimeEmployee extends Employee {
+    calculatePay(hoursWorked) {
+        return hoursWorked * 20; // tarifa por hora para part-time
+    }
+}
+class Contractor extends Employee {
+    calculatePay(hoursWorked) {
+        return hoursWorked * 40; // tarifa por hora para contractor
+    }
 }
 ```
